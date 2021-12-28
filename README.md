@@ -3,6 +3,8 @@
 This is a toolset for plotting graphs from log data in Python.
 For now is supported **.dat** and **.csv** data formats.
 
+![Image alt](https://github.com/semargol/dnavplot/blob/main/examples/screenshot1.png)
+
 # Requariments
 
 ```
