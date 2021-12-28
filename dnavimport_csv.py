@@ -32,7 +32,7 @@ if __name__ == '__main__':
         if ns.time == None:
             outarr[0::2] = d[d.dtype.names[0]]
         else:
-            outarr[0::2] = d['time']
+            outarr[0::2] = d[ns.time]
         outarr[1::2] = d[name]
         f = open(ns.out + name + '.dat', 'wb')
         outarr.tofile(f)
