@@ -5,7 +5,7 @@ For now is supported **.dat** and **.csv** data formats.
 
 ![Image alt](https://github.com/semargol/dnavplot/blob/main/examples/screenshot1.png)
 
-# Requariments
+# Requirements 
 
 ```
 numpy
@@ -23,4 +23,4 @@ For plotting graphs
 ./dnavplot.py -f tmp/Veast.dat tmp/Vup.dat tmp/Vdown.dat -c 2 1 
 ```
 
-You can use 'x' and 'z' buttuns to zoom and undo. Also 't' buttun make markers on line, 'q' for quit. 
+You can use 'x' and 'z' buttons  to zoom and undo. Also 't' button make markers on line, 'q' for quit. 
