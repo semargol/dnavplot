@@ -119,7 +119,7 @@ class DnavFigure:
     def onSelect(self, xmin, xmax):
         """" Выделение и приближение"""
         self.zoom_history.append([xmin, xmax])
-        print("zoom history = {}".format(self.zoom_history))
+        #print("zoom history = {}".format(self.zoom_history))
         self.zoom(xmin, xmax)
         #for ia in range(self.an):
         #    self.span = list()
