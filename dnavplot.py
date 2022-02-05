@@ -135,6 +135,7 @@ class DnavFigure:
         """" Определяет время начала записей,
         для того, чтобы вычитать это смещение.
         """
+        self.dn = len(self.d)
         if (start_time != None):
             self.start_time = start_time
         elif (start_step != None):
@@ -145,6 +146,7 @@ class DnavFigure:
                 self.start_time = min(self.start_time, self.d[i][0][0])
                 if len(self.d) <= 1:
                     print(self.d[i])
+        print('start_time = ', self.start_time)
         self.delFirstPoints()
 
 
@@ -183,7 +185,7 @@ class DnavFigure:
         if sum(self.c) != self.dn:
             raise NameError('Конфигурация графика не соответствует количеству входных файлов.')
 
-        self.determinationStartTime(start_time)
+        #self.determinationStartTime(start_time)
 
         print('plot: ')
         if self.an > 1:
