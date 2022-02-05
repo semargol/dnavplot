@@ -22,12 +22,12 @@ def createParser():
                         required=False, type=float)
     #parser.add_argument('-np', '--number_of_point', help=' Number of last point to plotting. ',
     #                    required=False, type=int)
-    parser.add_argument('--start_time', nargs=1,
+    parser.add_argument('--start_time', 
                         help='First plotting TIME point.',
                         required=False, type=float)
-    #parser.add_argument('--start_step', nargs=1,
-    #                    help='First plotting STEP point.',
-    #                    required=False, type=int)
+    parser.add_argument('--start_step',
+                        help='First plotting STEP point.',
+                        required=False, type=int)
     return parser
 
 class DnavFigure:
@@ -123,16 +123,30 @@ class DnavFigure:
         self.zoom(xmin, xmax)
         #for ia in range(self.an):
         #    self.span = list()
+    
+    def delFirstPoints(self):
+        """ Удаляет данные от начала файла до start_time """
+        for i in range(self.dn):
+            di = np.where(self.d[i][0][:] > self.start_time)[0][0]
+            self.d[i] = np.array([self.d[i][0][di:], self.d[i][1][di:]])
 
-    def determinationStartTime(self):
+
+    def determinationStartTime(self, start_time = None, start_step = None):
         """" Определяет время начала записей,
         для того, чтобы вычитать это смещение.
         """
-        for i in range(self.dn):
-            #self.start_time = min(self.start_time, self.d[i][0][10])
-            self.start_time = min(self.start_time, self.d[i][0][0])
-            if len(self.d) <=1 :
-                print(self.d[i])
+        if (start_time != None):
+            self.start_time = start_time
+        elif (start_step != None):
+            self.start_time = self.d[0][0][start_step]
+        else:
+            for i in range(self.dn):
+                #self.start_time = min(self.start_time, self.d[i][0][10])
+                self.start_time = min(self.start_time, self.d[i][0][0])
+                if len(self.d) <= 1:
+                    print(self.d[i])
+        self.delFirstPoints()
+
 
     def addSpanSelector(self):
         """ Добавляет возможность выделять область по горизонтальной оси.
@@ -155,7 +169,7 @@ class DnavFigure:
                 marker = ''
             line.set_marker(marker)
 
-    def plot(self,marker=''):
+    def plot(self,marker='', start_time = None):
         """ Основная функция, рисующая график.
         """
         #plt.ion()
@@ -169,7 +183,8 @@ class DnavFigure:
         if sum(self.c) != self.dn:
             raise NameError('Конфигурация графика не соответствует количеству входных файлов.')
 
-        self.determinationStartTime()
+        self.determinationStartTime(start_time)
+
         print('plot: ')
         if self.an > 1:
             self.f, self.a = plt.subplots(self.an, 1, sharex=True, squeeze=True)
@@ -182,13 +197,14 @@ class DnavFigure:
         i = 0
         for ia in range(self.an):
             for j in range(self.c[ia]):
+                #print(self.d[i][0])
+                #print(self.start_time)
                 self.d[i][0] = self.d[i][0] - self.start_time # вычитаем время начала
                 print("    {}".format(self.n[i]))
                 line, = self.a[ia].plot(self.d[i][0], self.d[i][1], label=self.n[i], marker=marker)
                 self.l.append(line)
                 self.a[ia].grid(True, color='#c6c6c6', linestyle='--', linewidth=0.5)
                 i += 1
-
         plt.xlabel('Start at ' +
                    time.strftime("%H:%M:%S",  time.gmtime(self.start_time)) +
                    '. Time in sec.')
@@ -196,7 +212,7 @@ class DnavFigure:
         self.autoScaleY()
         self.addLegend()
         self.f.canvas.mpl_connect('key_press_event', self.keyPress)
-        #self.onSelect(self.d[0][0][200], self.d[0][0][-1]); # Для отбрасывания начальных значений.
+        #self.onSelect(0, self.d[0][0][-1]); # Для отбрасывания начальных значений.
 
         plt.show()
         self.addSpanSelector()
@@ -233,7 +249,7 @@ if __name__ == '__main__':
 
     if namespace.update:
         plt.ion()
-        f.plot()
+        f.plot(namespace.start_time[0])
         while 1:
             # Обнуляем массив данных.
             f.d = list()
@@ -244,4 +260,6 @@ if __name__ == '__main__':
             f.f.canvas.flush_events()
             time.sleep(namespace.update)
     else:
+        f.determinationStartTime(start_time = namespace.start_time,
+                start_step = namespace.start_step)
         f.plot()
